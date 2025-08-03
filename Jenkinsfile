@@ -55,8 +55,7 @@ pipeline {
                 }	
             }
         }
-
-       stage("Build & Push Docker Image") {
+stage("Build & Push Docker Image") {
     steps {
         script {
             docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-cred') {
@@ -67,6 +66,7 @@ pipeline {
         }
     }
 }
+
 
 
         stage("Trivy Scan") {
