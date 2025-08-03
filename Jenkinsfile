@@ -55,19 +55,18 @@ pipeline {
                 }	
             }
         }
-stage("Build & Push Docker Image") {
-    steps {
-        script {
-            docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-cred') {
-                def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                dockerImage.push()
-                dockerImage.push('latest')
+
+        stage("Build & Push Docker Image") {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-cred') {
+                        def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                        dockerImage.push()
+                        dockerImage.push('latest')
+                    }
+                }
             }
         }
-    }
-}
-
-
 
         stage("Trivy Scan") {
             steps {
@@ -77,7 +76,7 @@ stage("Build & Push Docker Image") {
             }
         }
 
-        stage ('Cleanup Artifacts') {
+        stage("Cleanup Artifacts") {
             steps {
                 script {
                     sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
@@ -92,19 +91,6 @@ stage("Build & Push Docker Image") {
                     sh "curl -v -k --user clouduser:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-13-232-128-192.ap-south-1.compute.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
                 }
             }
-        }
-    }
-
-    post {
-        failure {
-            emailext body: '''${SCRIPT, template="groovy-html.template"}''',
-                     subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed",
-                     mimeType: 'text/html', to: "naveenrahulroy1@gmail.com"
-        }
-        success {
-            emailext body: '''${SCRIPT, template="groovy-html.template"}''',
-                     subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful",
-                     mimeType: 'text/html', to: "naveenrahulroy1@gmail.com"
         }
     }
 }
