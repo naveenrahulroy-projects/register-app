@@ -56,17 +56,21 @@ pipeline {
             }
         }
 
-        stage("Build & Push Docker Image") {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-cred') {
-                        def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                        dockerImage.push()
-                        dockerImage.push('latest')
-                    }
-                }
+       stage("Build & Push Docker Image") {
+    steps {
+        script {
+            echo "Image name: ${IMAGE_NAME}"
+            echo "Image tag: ${IMAGE_TAG}"
+
+            docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-cred') {
+                def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                dockerImage.push()
+                dockerImage.push('latest')
             }
         }
+    }
+}
+
 
         stage("Trivy Scan") {
             steps {
