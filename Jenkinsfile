@@ -56,7 +56,7 @@ pipeline {
             }
         }
 
-       stage("Build & Push Docker Image") {
+      """ stage("Build & Push Docker Image") {
     steps {
         script {
             echo "Image name: ${IMAGE_NAME}"
@@ -69,7 +69,7 @@ pipeline {
             }
         }
     }
-}
+}"""
 
 
         stage("Trivy Scan") {
