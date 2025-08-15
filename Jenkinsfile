@@ -22,7 +22,7 @@ pipeline {
 
         stage("Checkout from SCM") {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/naveenrahulroy-projects/register-app'
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/naveen-rahul-roy/register-app'
             }
         }
 
@@ -56,7 +56,6 @@ pipeline {
             }
         }
 
-     
         stage("Build & Push Docker Image") {
             steps {
                 script {
@@ -70,7 +69,6 @@ pipeline {
                     }
                 }
             }
-
        }
 
         stage("Trivy Scan") {
